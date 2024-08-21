@@ -1,19 +1,17 @@
-FROM node:10
-
-# Create app directory
-WORKDIR /usr/app
-
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+# Set the base image
+FROM node:20.12.2-alpine
+# Set the working directory
+WORKDIR /app
+# Copy package.json and package-lock.json to the container
 COPY package*.json ./
-
-RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
-
-# Bundle app source
+# Install dependencies
+RUN npm install --force
+# Copy the rest of the application code to the container
 COPY . .
-
-EXPOSE 8080
-CMD [ "node", "server.js" ]
+RUN npm run build
+# Set the environment variables
+#ENV NODE_ENV=production
+# Expose the port on which the application will run
+EXPOSE 3000
+# Start the application
+CMD ["npm", "start"]
